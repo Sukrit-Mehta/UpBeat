@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.sukrit.musicplayer.R;
 
@@ -20,10 +21,12 @@ public class CustomAdapter extends BaseAdapter {
 
     Context context;
     ArrayList<String> paths=new ArrayList<String>();
+    ArrayList<String> albumNames=new ArrayList<String>();
     LayoutInflater inflater;
-    public CustomAdapter(Context context,ArrayList<String> paths) {
+    public CustomAdapter(Context context,ArrayList<String> paths , ArrayList<String> albumNames) {
         this.context=context;
         this.paths=paths;
+        this.albumNames=albumNames;
         inflater=LayoutInflater.from(context);
     }
 
@@ -45,7 +48,10 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         view=inflater.inflate(R.layout.activity_gridview,null);
-        ImageView icon=(ImageView) view.findViewById(R.id.img);
+        ImageView icon= view.findViewById(R.id.img);
+        TextView albumName=view.findViewById(R.id.albumName);
+        //albumName.setText(albumNames.get(i));
+        albumName.setText(albumNames.get(i).substring(albumNames.get(i).indexOf(' ')).trim());
         if(paths.get(i)==null)
         {
             icon.setImageResource(R.drawable.music);
@@ -55,4 +61,6 @@ public class CustomAdapter extends BaseAdapter {
         }
         return view;
     }
+
+
 }

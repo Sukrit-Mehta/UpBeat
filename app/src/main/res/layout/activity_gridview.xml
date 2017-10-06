@@ -11,4 +11,14 @@
         android:layout_gravity="center_horizontal"
         android:src="@drawable/ic_menu_send" />
 
+    <TextView
+        android:id="@+id/albumName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:text="TextView" />
+
+
 </LinearLayout>
