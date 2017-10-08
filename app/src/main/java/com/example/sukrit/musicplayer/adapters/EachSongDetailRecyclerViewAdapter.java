@@ -16,12 +16,12 @@ import java.util.ArrayList;
  * Created by Sukrit on 10/6/2017.
  */
 
-public class SongsRecyclerViewAdapter extends RecyclerView.Adapter<SongsRecyclerViewAdapter.DetailsItemHolder> {
+public class EachSongDetailRecyclerViewAdapter extends RecyclerView.Adapter<EachSongDetailRecyclerViewAdapter.DetailsItemHolder> {
 
     ArrayList<SongsPojo> songsDetails;
     Context context;
 
-    public SongsRecyclerViewAdapter(ArrayList<SongsPojo> songsDetails,Context context) {
+    public EachSongDetailRecyclerViewAdapter(ArrayList<SongsPojo> songsDetails,Context context) {
         this.songsDetails=songsDetails;
         this.context=context;
     }
@@ -62,6 +62,7 @@ public class SongsRecyclerViewAdapter extends RecyclerView.Adapter<SongsRecycler
             super(itemView);
             songName=itemView.findViewById(R.id.songName);
             artistName=itemView.findViewById(R.id.artistName);
+            duration=itemView.findViewById(R.id.duration);
             testView=itemView;
         }
     }

@@ -7,10 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.example.sukrit.musicplayer.R;
+import com.example.sukrit.musicplayer.adapters.EachSongDetailRecyclerViewAdapter;
 import com.example.sukrit.musicplayer.models.SongsPojo;
 
 import java.util.ArrayList;
@@ -20,19 +23,23 @@ public class DisplaySongsActivity extends AppCompatActivity {
     TextView textID;
     ArrayList<SongsPojo> songsArray = new ArrayList<SongsPojo>();
     Long val;
+    RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_songs);
 
-        textID= (TextView) findViewById(R.id.textID);
+        //textID= (TextView) findViewById(R.id.textID);
         Intent myIntent= getIntent();
         val = myIntent.getLongExtra("albumID",0)+1;
-        textID.setText(String.valueOf(val));
+        //textID.setText(String.valueOf(val));
         YOUR_METHOD_NAME();
+        recyclerView= (RecyclerView) findViewById(R.id.displaySongsRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(DisplaySongsActivity.this));
+        recyclerView.setAdapter(new EachSongDetailRecyclerViewAdapter(songsArray,DisplaySongsActivity.this));
+
     }
-
-
 
         public void YOUR_METHOD_NAME(){
         ContentResolver contentResolver = getContentResolver();
@@ -51,6 +58,10 @@ public class DisplaySongsActivity extends AppCompatActivity {
             int songId = songCursor.getColumnIndex(MediaStore.Audio.Media._ID);
             int songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int albumId=songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+            int artistID=songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+            int durationID=songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+            int albumNameID=songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+
 //            Log.d("RRRR","songId: "+String.valueOf(songId));
 //            Log.d("RRRR","songTitle: "+String.valueOf(songTitle));
 //            Log.d("RRRR","albumId: "+String.valueOf(albumId));
@@ -60,15 +71,28 @@ public class DisplaySongsActivity extends AppCompatActivity {
                 long currentId = songCursor.getLong(songId);
                 String currentTitle = songCursor.getString(songTitle);
                 long currentAlbumId=songCursor.getLong(albumId)+1;
+                String artistName=songCursor.getString(artistID);
+                Long duration=songCursor.getLong(durationID);
+                String albumName=songCursor.getString(albumNameID);
+                String albumNameFinal=albumName.substring(albumName.indexOf(' ')).trim();
+
                 //songsArray.add(new SongsPojo(currentId, currentTitle));
 
                 Log.d("RRR","currentID: "+String.valueOf(currentId));
                 Log.d("RRR","currentTitle: "+String.valueOf(currentTitle));
                 Log.d("RRR","currentAlbumId: "+String.valueOf(currentAlbumId));
+                Log.d("RRR","artistName: "+artistName);
+                Log.d("RRR","duration: "+String.valueOf(duration));
+                Log.d("RRR","albumName: " +albumName.substring(albumName.indexOf(' ')).trim());
+                Long min=(duration/100)/60;
+                Long sec=(duration/100)%60;
+
+                songsArray.add(new SongsPojo(currentTitle,artistName,albumNameFinal,String.valueOf(min),String.valueOf(sec)));
 
                 Uri imageUri=MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
                 Cursor albumImageCursor = managedQuery(imageUri,
-                        new String[] {MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
+                        new String[] {MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART,
+                                MediaStore.Audio.Albums.ARTIST,MediaStore.Audio.Albums.NUMBER_OF_SONGS},
                         MediaStore.Audio.Albums._ID+ "=?",
                         new String[] {String.valueOf(currentAlbumId)},
                         null);
