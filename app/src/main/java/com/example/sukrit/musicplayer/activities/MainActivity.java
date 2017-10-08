@@ -70,8 +70,9 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MainActivity.this, albumIDs.get(i)+ " clicked", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, albumIDs.get(i+1)+ " clicked", Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(MainActivity.this,DisplaySongsActivity.class);
+                //intent.putExtra("albumID",albumIDs.get(i+1));
                 intent.putExtra("albumID",albumIDs.get(i));
                 startActivity(intent);
             }
@@ -199,7 +200,7 @@ public void getAlbumList(){
             MediaStore.Audio.Albums.ARTIST,MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.NUMBER_OF_SONGS };
     String selection = null;
     String[] selectionArgs = null;
-    String sortOrder = MediaStore.Audio.Media.ALBUM + " ASC";
+    String sortOrder = MediaStore.Audio.Media._ID + " ASC";
     Cursor cursor = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs, sortOrder);
 
     if(cursor!=null &&cursor.moveToFirst())
