@@ -1,6 +1,7 @@
 package com.example.sukrit.musicplayer.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     GridView gridView;
     ArrayList<String> pathArray=new ArrayList<String>();
     ArrayList<String> albumNames=new ArrayList<String>();
+    ArrayList<Long> albumIDs=new ArrayList<Long>();
+
     int i;
     EditText editText;
 
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         );
         if(permission1== PackageManager.PERMISSION_GRANTED)
         {
-            YOUR_METHOD_NAME();
+            getAlbumList();
             Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
         }
         else
@@ -63,11 +66,14 @@ public class MainActivity extends AppCompatActivity {
                     CODE_PERM
             );
         }
-
+       // Toast.makeText(this, "Path Array: "+pathArray.toString(), Toast.LENGTH_SHORT).show();
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MainActivity.this, String.valueOf(i)+ " clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, albumIDs.get(i)+ " clicked", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(MainActivity.this,DisplaySongsActivity.class);
+                intent.putExtra("albumID",albumIDs.get(i));
+                startActivity(intent);
             }
         });
       /*  editText.addTextChangedListener(new TextWatcher() {
@@ -188,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //
 //    }
-public void YOUR_METHOD_NAME(){
+public void getAlbumList(){
     String[] projection = new String[] { MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM,
             MediaStore.Audio.Albums.ARTIST,MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.NUMBER_OF_SONGS };
     String selection = null;
@@ -207,6 +213,7 @@ public void YOUR_METHOD_NAME(){
             String nameAlbum=cursor.getString(nameCol);
             pathArray.add(path);
             albumNames.add(nameAlbum);
+            albumIDs.add(albId);
             Log.d("TTT","albId: "+String.valueOf(albId));
             Log.d("TTT","albArt: "+path);
             Log.d("TTT","nameAlbum: "+nameAlbum);
@@ -225,7 +232,7 @@ public void YOUR_METHOD_NAME(){
                 {
                     if(grantResults[i]== PackageManager.PERMISSION_GRANTED)
                     {
-                        YOUR_METHOD_NAME();
+                        getAlbumList();
                     }
                 }
             }
