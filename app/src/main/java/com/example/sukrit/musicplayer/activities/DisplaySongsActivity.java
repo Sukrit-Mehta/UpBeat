@@ -9,12 +9,16 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.sukrit.musicplayer.R;
 import com.example.sukrit.musicplayer.adapters.EachSongDetailRecyclerViewAdapter;
 import com.example.sukrit.musicplayer.models.SongsPojo;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 
@@ -24,11 +28,29 @@ public class DisplaySongsActivity extends AppCompatActivity {
     ArrayList<SongsPojo> songsArray = new ArrayList<SongsPojo>();
     Long val;
     RecyclerView recyclerView;
+    MaterialSearchView searchView;
+    ArrayList<String> songsNames=new ArrayList<>();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_item,menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_songs);
+
+        Toolbar toolbar= (Toolbar) findViewById(R.id.appBarLayoutAllSongs);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Material Search...");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //Search View
+        searchView= (MaterialSearchView) findViewById(R.id.search_view);
 
         //textID= (TextView) findViewById(R.id.textID);
         Intent myIntent= getIntent();
@@ -39,6 +61,60 @@ public class DisplaySongsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(DisplaySongsActivity.this));
         recyclerView.setAdapter(new EachSongDetailRecyclerViewAdapter(songsArray,DisplaySongsActivity.this));
 
+        for(int i=0;i<songsArray.size();i++)
+        {
+            songsNames.add(songsArray.get(i).getTitle());
+        }
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                recyclerView.setLayoutManager(new LinearLayoutManager(DisplaySongsActivity.this));
+                recyclerView.setAdapter(new EachSongDetailRecyclerViewAdapter(songsArray,DisplaySongsActivity.this));
+
+            }
+        });
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText!=null && !newText.isEmpty() && songsArray.size()>0)
+                {
+                    ArrayList<SongsPojo> filteredArrayList=new ArrayList<SongsPojo>();
+                    ArrayList<String> strArray=new ArrayList<String>();
+
+                    Log.d("LSS","arr: "+songsNames.toString());
+                    for(int i=0;i<songsArray.size();i++)
+                    {
+                        if(songsArray.get(i).getTitle().toLowerCase().contains(newText.toLowerCase()))
+                        {
+//                            filteredArrayList.get(i).setTitle(songsArray.get(i).setTitle(newText));
+//                            filteredArrayList.add(new SongsPojo(songsArray))
+                              strArray.add(songsArray.get(i).getTitle());
+                            filteredArrayList.add(new SongsPojo(songsArray.get(i).getTitle(),songsArray.get(i).getArtist(),songsArray.get(i).getAlbumname()
+                            ,songsArray.get(i).getMinlength(),songsArray.get(i).getSeclength()));
+                            Log.d("DSS","Fil: "+strArray.toString());
+                            Log.d("DSS","Fil: "+filteredArrayList.toString());
+                        }
+                    }
+                    recyclerView.setAdapter(new EachSongDetailRecyclerViewAdapter(filteredArrayList,DisplaySongsActivity.this));
+                }
+                else
+                {
+                    recyclerView.setAdapter(new EachSongDetailRecyclerViewAdapter(songsArray,DisplaySongsActivity.this));
+                }
+                return true;
+            }
+        });
     }
 
         public void YOUR_METHOD_NAME(){

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //imageView= (ImageView) findViewById(R.id.imageView);
 
-        editText= (EditText) findViewById(R.id.editText);
+       // editText= (EditText) findViewById(R.id.editText);
 
         gridView= (GridView) findViewById(R.id.gridView);
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE
         );
-        if(permission1== PackageManager.PERMISSION_GRANTED)
+        if(permission1==PackageManager.PERMISSION_GRANTED)
         {
             getAlbumList();
             Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
